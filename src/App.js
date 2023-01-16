@@ -1,24 +1,64 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
+import User from './Components/User';
 import './App.css';
+import Navbar from './Components/Navbar';
+import Footer from './Components/Footer';
 
 function App() {
+
+  const [equipo, setEquipo] = useState([])
+  const [show, setShow] = useState(false)
+
+  useEffect(() => {
+    obtenerDatos()
+  }, [])
+
+  const obtenerDatos = async () => {
+    //const data = await fetch("https://jsonplaceholder.typicode.com/users")
+    const data = await fetch("https://jsonplaceholder.typicode.com/users/")
+
+    const users = await data.json()
+    /**Impresion en consola */
+    console.log(users)
+    setShow(true)
+    setEquipo(users)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+    <>
+      {show === true ? (
+        <>
+          <Navbar />
+          <div className="container">
+            <>
+              {equipo.map((parametro, index) =>
+                <User
+                  key={index}
+                  id={parametro.id}
+                  name={parametro.name}
+                  username={parametro.username}
+                  email={parametro.email}
+                  phone={parametro.phone}
+                  street={parametro.address.street}
+                  className="container-user"
+                />
+              )}
+            </>
+          </div>
+          <br />
+          <Footer />
+        </>
+      ) : (
+        <>
+          <Navbar />
+          <h1>Cargando...</h1>
+          <Footer />
+
+        </>
+      )
+      }
+    </>
   );
 }
 
